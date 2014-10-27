@@ -11,8 +11,10 @@ import com.vaadin.server.VaadinServlet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+import org.duckdns.valci.jticketmanager.AddressBookExample;
+
 @SuppressWarnings("serial")
-@Theme("jticketmanager")
+@Theme("valo-theme")
 public class JticketmanagerUI extends UI {
     public Navigator navigator;
     VerticalLayout layout;

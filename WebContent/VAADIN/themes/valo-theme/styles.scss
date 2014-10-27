@@ -1,9 +1,9 @@
 @import "addons.scss";
-@import "jticketmanager.scss";
+@import "valo-theme.scss";
 
 /* This file prefixes all rules with the theme name to avoid causing conflicts with other themes. */
-/* The actual styles should be defined in jticketmanager.scss */
-.jticketmanager {
+/* The actual styles should be defined in testvalo.scss */
+.valo-theme {
   @include addons;
-  @include jticketmanager;
+  @include valo-theme;
 }
