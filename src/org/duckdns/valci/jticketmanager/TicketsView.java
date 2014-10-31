@@ -1,11 +1,15 @@
 package org.duckdns.valci.jticketmanager;
 
+import org.duckdns.valci.jtricketmanager.data.TicketsSQLContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.vaadin.data.Property;
+import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
@@ -14,19 +18,23 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-public class TicketsView extends VerticalLayout implements View{
+public class TicketsView extends VerticalLayout implements View {
     /**
      * 
      */
     private static final long serialVersionUID = 1L;
     static final Logger LOG = LoggerFactory.getLogger(TicketsView.class);
+
+    TicketsController controller;
+
     private Table ticketList = new Table();
     private TextField ticketSearchField = new TextField();
     private Button addNewTicketButton = new Button("New ticket");
     private Button removeTicketButton = new Button("Remove this ticket");
     private FormLayout editorLayout = new FormLayout();
+
     private FieldGroup editorFields = new FieldGroup();
-    
+
     // table column header
     private static final String TICKETID = "#";
     private static final String TICKETCATEGORY = "Category";
@@ -35,18 +43,83 @@ public class TicketsView extends VerticalLayout implements View{
     private static final String TICKETSUBJECT = "Subject";
     private static final String TICKETASSIGNEE = "Assignee";
     private static final String TICKETUPDATE = "Updated";
-    
-    public TicketsView(){
+
+    private static final String[] fieldNames = new String[] { TICKETID,
+            TICKETCATEGORY, TICKETSTATUS, TICKETPRIORITY, TICKETSUBJECT,
+            TICKETASSIGNEE, TICKETUPDATE };
+
+    public TicketsView(TicketsSQLContainer ticketsSQLContainerInstance) {
+        this.controller = new TicketsController(this,
+                ticketsSQLContainerInstance);
         initLayout();
         initTicketList();
-        //initEditor();
-        //initSearch();
-        //initAddRemoveButtons();
+        initEditor();
+        initSearch();
+        initAddRemoveButtons();
+    }
+
+    private void initAddRemoveButtons() {
+        // TODO Auto-generated method stub
+        addNewTicketButton.setId("addNewTicketButton");
+        addNewTicketButton
+                .addClickListener(controller.getButtonClickListener());
+        removeTicketButton.setId("removeTicketButton");
+        removeTicketButton
+                .addClickListener(controller.getButtonClickListener());
+
+        /*
+         * addNewContactButton.addClickListener(new ClickListener() { public
+         * void buttonClick(ClickEvent event) {
+         * 
+         * contactContainer.removeAllContainerFilters(); Object contactId =
+         * contactContainer.addItemAt(0);
+         * 
+         * contactList.getContainerProperty(contactId, FNAME).setValue( "New");
+         * contactList.getContainerProperty(contactId, LNAME).setValue(
+         * "Contact");
+         * 
+         * contactList.select(contactId); } });
+         * removeContactButton.addClickListener(new ClickListener() { public
+         * void buttonClick(ClickEvent event) { Object contactId =
+         * contactList.getValue(); contactList.removeItem(contactId); } });
+         */
+    }
+
+    private void initSearch() {
+
+        ticketSearchField.setInputPrompt("Search tickets");
+        ticketSearchField.setTextChangeEventMode(TextChangeEventMode.LAZY);
+        ticketSearchField.addTextChangeListener(controller
+                .getSearchFieldTextChangeListener());
+
     }
 
     private void initTicketList() {
-        // TODO Auto-generated method stub
-        
+        // here we have to add data source
+        ticketList.setContainerDataSource(controller.getTicketsSQLContainer());
+        ticketList.setVisibleColumns(new String[] {
+                TicketsSQLContainer.propertyIds.ID.toString(),
+                TicketsSQLContainer.propertyIds.ticketCategory.toString(),
+                TicketsSQLContainer.propertyIds.ticketStatus.toString(),
+                TicketsSQLContainer.propertyIds.ticketPriority.toString(),
+                TicketsSQLContainer.propertyIds.ticketSubject.toString() });
+        ticketList.setSelectable(true);
+        ticketList.setImmediate(true);
+        ticketList.addValueChangeListener(controller
+                .getTableValueChangeListener());
+
+    }
+
+    private void initEditor() {
+        editorLayout.addComponent(removeTicketButton);
+        for (String fieldName : fieldNames) {
+            TextField field = new TextField(fieldName);
+            field.setId(fieldName);
+            editorLayout.addComponent(field);
+            field.setWidth("100%");
+            editorFields.bind(field, fieldName);
+        }
+        editorFields.setBuffered(true);
     }
 
     private void initLayout() {
@@ -86,9 +159,21 @@ public class TicketsView extends VerticalLayout implements View{
         editorLayout.setVisible(false);
     }
 
+    public Table getTicketList() {
+        return ticketList;
+    }
+
+    public FieldGroup getEditorFields() {
+        return editorFields;
+    }
+
+    public FormLayout getEditorLayout() {
+        return editorLayout;
+    }
+
     @Override
     public void enter(ViewChangeEvent event) {
         // TODO Auto-generated method stub
-        
+
     }
 }

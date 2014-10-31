@@ -14,7 +14,6 @@ public class DatabaseHelper {
             .getAbsolutePath();
     FileResource dbFile = new FileResource(new File(basepath
             + "/WEB-INF/resources/tickets.sqlite"));
-    // String dbPath = "test//opensongbookdb.sqlite";
 
     private JDBCConnectionPool connectionPool = null;
 

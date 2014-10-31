@@ -2,7 +2,6 @@ package org.duckdns.valci.jtricketmanager.data;
 
 import java.sql.SQLException;
 
-
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 
@@ -11,7 +10,18 @@ public class TicketsSQLContainer {
     private DatabaseHelper dbHelper = null;
     private SQLContainer ticketsContainer = null;
 
-    public SQLContainer getSongContainer() {
+    public static enum propertyIds {
+        ID, ticketCategory, ticketStatus, ticketPriority, ticketSubject, ticketAssignee, ticketAuthor, ticketUpdate;
+    }
+
+    /*
+     * CREATE TABLE tickets ( ID INTEGER, ticketCategory TEXT(2000000000),
+     * ticketStatus TEXT(2000000000), ticketPriority TEXT(2000000000),
+     * ticketSubject TEXT(2000000000), ticketAssignee TEXT(2000000000),
+     * ticketAuthor TEXT(2000000000), ticketUpdate TEXT(2000000000), version
+     * INTEGER NOT NULL, CONSTRAINT TICKETS_PK PRIMARY KEY (ID) );
+     */
+    public SQLContainer getContainer() {
         return ticketsContainer;
     }
 
