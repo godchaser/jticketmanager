@@ -39,19 +39,22 @@ public class TicketsController {
 
         public void buttonClick(ClickEvent event) {
             switch (event.getButton().getId()) {
-            case ("newSongButton"):
-                LOG.trace("New song button clicked");
+            case ("addNewTicketButton"):
+                LOG.trace("New ticket button clicked");
                 LOG.trace("Clearing input fields");
+                model.addNewTicket(view.getTicketList());
+                
+                
                 // view.clearSearchAndSongFields();
                 break;
-            case ("saveSongButton"):
-                LOG.trace("Save button clicked");
+            case ("saveTicketButton"):
+                LOG.trace("Save ticket button clicked");
                 // model.addSong(view.getSongNameField().getValue(), view
                 // .getSongTextInput().getValue(), view
                 // .getSongAuthorField().getValue());
                 break;
-            case ("deleteSongButton"):
-                LOG.trace("Delete button clicked");
+            case ("deleteTicketButton"):
+                LOG.trace("Delete ticket button clicked");
                 // model.deleteSong(view.getSongListTable().getValue());
             }
         };
