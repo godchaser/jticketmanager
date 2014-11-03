@@ -1,0 +1,11 @@
+CREATE TABLE tickets (
+	ID INTEGER PRIMARY KEY AUTOINCREMENT,
+	ticketCategory text,
+	ticketStatus text,
+	ticketPriority text,
+	ticketSubject text,
+	ticketAssignee text,
+	ticketAuthor text,
+	ticketUpdate text,
+	version INTEGER DEFAULT 0 NOT NULL
+)

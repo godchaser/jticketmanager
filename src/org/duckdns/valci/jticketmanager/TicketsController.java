@@ -1,5 +1,7 @@
 package org.duckdns.valci.jticketmanager;
 
+import java.io.Serializable;
+
 import org.duckdns.valci.jtricketmanager.data.TicketsSQLContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +13,13 @@ import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Component;
 
-public class TicketsController {
+public class TicketsController implements Serializable {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+
     static final Logger LOG = LoggerFactory.getLogger(TicketsController.class);
 
     private TicketsModel model;
@@ -41,20 +47,23 @@ public class TicketsController {
             switch (event.getButton().getId()) {
             case ("addNewTicketButton"):
                 LOG.trace("New ticket button clicked");
-                LOG.trace("Clearing input fields");
-                model.addNewTicket(view.getTicketList());
-                
-                
+                LOG.trace("Unselecting table");
+                // view.getTicketList().select(null);
+                view.getEditorFields().discard();
+                model.addNewTicket(view.getTicketList(), view.getEditorFields());
+
                 // view.clearSearchAndSongFields();
                 break;
             case ("saveTicketButton"):
                 LOG.trace("Save ticket button clicked");
+                model.saveTicket(view.getEditorFields());
                 // model.addSong(view.getSongNameField().getValue(), view
                 // .getSongTextInput().getValue(), view
                 // .getSongAuthorField().getValue());
                 break;
-            case ("deleteTicketButton"):
-                LOG.trace("Delete ticket button clicked");
+            case ("removeTicketButton"):
+                LOG.trace("Remove ticket button clicked");
+                model.removeTicket(view.getTicketList().getValue());
                 // model.deleteSong(view.getSongListTable().getValue());
             }
         };
@@ -74,7 +83,7 @@ public class TicketsController {
             LOG.trace("Using search filter for tickets subjects: "
                     + event.getText());
             model.getTicketsSQLContainer().addContainerFilter(
-                    TicketsSQLContainer.propertyIds.ticketSubject.toString(),
+                    TicketsSQLContainer.getDbColumnsMap().get("ticketSubject"),
                     event.getText(), true, false);
         }
     }
@@ -90,10 +99,11 @@ public class TicketsController {
             // TODO Auto-generated method stub
             Object contactId = view.getTicketList().getValue();
 
-            if (contactId != null)
+            if (contactId != null) {
                 view.getEditorFields().setItemDataSource(
                         view.getTicketList().getItem(contactId));
-            ((Component) view.getEditorFields()).setVisible(contactId != null);
+            }
+            view.getEditorLayout().setVisible(contactId != null);
         }
     }
 
