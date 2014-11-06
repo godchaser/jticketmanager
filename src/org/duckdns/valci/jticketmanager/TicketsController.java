@@ -80,8 +80,10 @@ public class TicketsController implements Serializable {
             LOG.trace("Removing all container filters");
             model.getTicketsSQLContainer().getContainer().removeAllContainerFilters();
             LOG.trace("Using search filter for tickets subjects: " + event.getText());
-            model.getTicketsSQLContainer().getContainer()
-                    .addContainerFilter(TicketsSQLContainer.propertyIds.ticketSubject, event.getText(), true, false);
+            model.getTicketsSQLContainer()
+                    .getContainer()
+                    .addContainerFilter(TicketsSQLContainer.propertyIds.ticketSubject.toString(), event.getText(),
+                            true, false);
         }
     }
 
