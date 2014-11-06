@@ -213,7 +213,9 @@ public class AddressBookExample extends VerticalLayout implements View {
 
     private void initContactList() {
         contactList.setContainerDataSource(contactContainer);
-        contactList.setVisibleColumns(new String[] { FNAME, LNAME, COMPANY });
+        
+        contactList.setVisibleColumns(new Object[] { FNAME, LNAME, COMPANY });
+        
         contactList.setSelectable(true);
         contactList.setImmediate(true);
         contactList.addValueChangeListener(new Property.ValueChangeListener() {
@@ -252,6 +254,7 @@ public class AddressBookExample extends VerticalLayout implements View {
                 "Barks", "Ross", "Schneider", "Tate" };
         for (int i = 0; i < 1000; i++) {
             Object id = ic.addItem();
+            
             ic.getContainerProperty(id, FNAME).setValue(
                     fnames[(int) (fnames.length * Math.random())]);
             ic.getContainerProperty(id, LNAME).setValue(

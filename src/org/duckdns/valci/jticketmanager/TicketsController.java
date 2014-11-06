@@ -1,10 +1,8 @@
 package org.duckdns.valci.jticketmanager;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-
-import org.apache.commons.lang3.EnumUtils;
 import org.duckdns.valci.jtricketmanager.data.TicketsSQLContainer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
