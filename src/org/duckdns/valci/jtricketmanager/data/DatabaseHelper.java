@@ -15,10 +15,8 @@ public class DatabaseHelper implements Serializable {
      * 
      */
     private static final long serialVersionUID = 1L;
-    String basepath = VaadinService.getCurrent().getBaseDirectory()
-            .getAbsolutePath();
-    FileResource dbFile = new FileResource(new File(basepath
-            + "/WEB-INF/resources/tickets.sqlite"));
+    String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
+    FileResource dbFile = new FileResource(new File(basepath + "/WEB-INF/resources/tickets.sqlite"));
 
     private JDBCConnectionPool connectionPool = null;
 
@@ -29,8 +27,7 @@ public class DatabaseHelper implements Serializable {
     private JDBCConnectionPool initConnectionPool() {
         try {
             String dbPath = dbFile.getSourceFile().getCanonicalPath();
-            connectionPool = new SimpleJDBCConnectionPool("org.sqlite.JDBC",
-                    "jdbc:sqlite:" + dbPath, "", "", 2, 5);
+            connectionPool = new SimpleJDBCConnectionPool("org.sqlite.JDBC", "jdbc:sqlite:" + dbPath, "", "", 2, 5);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {

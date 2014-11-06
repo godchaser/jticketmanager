@@ -16,32 +16,31 @@ import com.vaadin.ui.VerticalLayout;
 @SuppressWarnings("serial")
 @Theme("valo-theme")
 public class JticketmanagerUI extends UI {
-	public Navigator navigator;
-	VerticalLayout layout;
+    public Navigator navigator;
+    VerticalLayout layout;
 
-	TicketsSQLContainer ticketsSQLContainerInstance;
+    TicketsSQLContainer ticketsSQLContainerInstance;
 
-	public static final String JTICKETMANAGER = "tickets";
-	public static final String ADDRESSBOOKEXAMPLE = "example";
+    public static final String JTICKETMANAGER = "tickets";
+    public static final String ADDRESSBOOKEXAMPLE = "example";
 
-	@WebServlet(value = "/*", asyncSupported = true)
-	@VaadinServletConfiguration(productionMode = false, ui = JticketmanagerUI.class)
-	public static class Servlet extends VaadinServlet {
-	}
+    @WebServlet(value = "/*", asyncSupported = true)
+    @VaadinServletConfiguration(productionMode = false, ui = JticketmanagerUI.class)
+    public static class Servlet extends VaadinServlet {
+    }
 
-	@Override
-	protected void init(VaadinRequest request) {
+    @Override
+    protected void init(VaadinRequest request) {
 
-		ticketsSQLContainerInstance = new TicketsSQLContainer();
-		layout = new VerticalLayout();
-		layout.setMargin(true);
-		layout.setSpacing(true);
-		setContent(layout);
-		ComponentContainerViewDisplay viewDisplay = new ComponentContainerViewDisplay(
-				layout);
-		navigator = new Navigator(UI.getCurrent(), viewDisplay);
-		navigator.addView("", new TicketsView(ticketsSQLContainerInstance));
-		navigator.addView(ADDRESSBOOKEXAMPLE, new AddressBookExample());
-	}
+        ticketsSQLContainerInstance = new TicketsSQLContainer();
+        layout = new VerticalLayout();
+        layout.setMargin(true);
+        layout.setSpacing(true);
+        setContent(layout);
+        ComponentContainerViewDisplay viewDisplay = new ComponentContainerViewDisplay(layout);
+        navigator = new Navigator(UI.getCurrent(), viewDisplay);
+        navigator.addView("", new TicketsView(ticketsSQLContainerInstance));
+        navigator.addView(ADDRESSBOOKEXAMPLE, new AddressBookExample());
+    }
 
 }

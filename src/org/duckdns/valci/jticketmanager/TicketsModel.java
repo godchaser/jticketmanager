@@ -15,152 +15,148 @@ import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Table;
 
 public class TicketsModel implements Serializable {
-	/**
+    /**
      * 
      */
-	private static final long serialVersionUID = 1L;
-	private TicketsSQLContainer ticketsSQLContainer;
+    private static final long serialVersionUID = 1L;
+    private TicketsSQLContainer ticketsSQLContainer;
 
-	static final Logger LOG = LoggerFactory.getLogger(TicketsModel.class);
+    static final Logger LOG = LoggerFactory.getLogger(TicketsModel.class);
 
-	public TicketsModel(TicketsSQLContainer ticketsSQLContainerInstance) {
-		ticketsSQLContainer = ticketsSQLContainerInstance;
-	}
+    public TicketsModel(TicketsSQLContainer ticketsSQLContainerInstance) {
+        ticketsSQLContainer = ticketsSQLContainerInstance;
+    }
 
-	public TicketsSQLContainer getTicketsSQLContainer() {
-		return ticketsSQLContainer;
-	}
+    public TicketsSQLContainer getTicketsSQLContainer() {
+        return ticketsSQLContainer;
+    }
 
-	@SuppressWarnings("unchecked")
-	public void addNewTicket(Table ticketList, FieldGroup fieldGroup) {
-		ticketsSQLContainer.getContainer().removeAllContainerFilters();
-		Object ticketId = ticketsSQLContainer.getContainer().addItem();
-		LOG.trace("Setting default values");
-		ticketsSQLContainer
-				.getContainer()
-				.getContainerProperty(ticketId,
-						TicketsSQLContainer.propertyIds.ticketAssignee.toString())
-				.setValue("0");
+    @SuppressWarnings("unchecked")
+    public void addNewTicket(Table ticketList, FieldGroup fieldGroup) {
+        ticketsSQLContainer.getContainer().removeAllContainerFilters();
+        Object ticketId = ticketsSQLContainer.getContainer().addItem();
+        LOG.trace("Setting default values to container");
 
-		ticketsSQLContainer
-				.getContainer()
-				.getContainerProperty(
-						ticketId,
-						TicketsSQLContainer.propertyIds.ticketCategory
-								.toString())
-				.setValue(
-						TicketsSQLContainer.getDefaultFields().get(
-								TicketsSQLContainer.propertyIds.ticketCategory
-										.toString()));
+        ticketsSQLContainer
+                .getContainer()
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketCategory.toString())
+                .setValue(
+                        TicketsSQLContainer.getDefaultFields().get(
+                                TicketsSQLContainer.propertyIds.ticketCategory.toString()));
 
-		ticketsSQLContainer
-				.getContainer()
-				.getContainerProperty(
-						ticketId,
-						TicketsSQLContainer.propertyIds.ticketPriority
-								.toString())
-				.setValue(
-						TicketsSQLContainer.getDefaultFields().get(
-								TicketsSQLContainer.propertyIds.ticketPriority
-										.toString()));
+        ticketsSQLContainer
+                .getContainer()
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketPriority.toString())
+                .setValue(
+                        TicketsSQLContainer.getDefaultFields().get(
+                                TicketsSQLContainer.propertyIds.ticketPriority.toString()));
 
-		ticketsSQLContainer
-				.getContainer()
-				.getContainerProperty(ticketId,
-						TicketsSQLContainer.propertyIds.ticketStatus.toString())
-				.setValue(
-						TicketsSQLContainer.getDefaultFields().get(
-								TicketsSQLContainer.propertyIds.ticketStatus
-										.toString()));
+        ticketsSQLContainer
+                .getContainer()
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketStatus.toString())
+                .setValue(
+                        TicketsSQLContainer.getDefaultFields().get(
+                                TicketsSQLContainer.propertyIds.ticketStatus.toString()));
 
-		String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm")
-				.format(Calendar.getInstance().getTime());
+        ticketsSQLContainer
+                .getContainer()
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketSubject.toString())
+                .setValue(
+                        TicketsSQLContainer.getDefaultFields().get(
+                                TicketsSQLContainer.propertyIds.ticketSubject.toString()));
 
-		ticketsSQLContainer
-				.getContainer()
-				.getContainerProperty(ticketId,
-						TicketsSQLContainer.propertyIds.ticketUpdate.toString())
-				.setValue(timeStamp);
+        ticketsSQLContainer
+                .getContainer()
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketAssignee.toString())
+                .setValue(
+                        TicketsSQLContainer.getDefaultFields().get(
+                                TicketsSQLContainer.propertyIds.ticketAssignee.toString()));
 
-		LOG.trace("now trying to add new ticket: " + ticketId.toString());
-		// commitFieldGroup(fieldGroup);
-		commitToContainer();
-		Object newRowId = ticketsSQLContainer.getContainer().getItem(
-				ticketsSQLContainer.getNewRowId());
+        String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(Calendar.getInstance().getTime());
 
-		if (newRowId != null) {
-			LOG.trace("Selecting new row in table: " + newRowId);
-			ticketList.select(newRowId);
-		} else {
-			// this is workaround because seems that RowChangeId listener is not
-			// working
-			Object lastRowId = ticketsSQLContainer.getContainer().lastItemId();
-			LOG.trace("Selecting last row in table: " + lastRowId);
-			ticketList.select(lastRowId);
-		}
-	}
+        LOG.trace("Setting timestamp" + timeStamp);
+        ticketsSQLContainer.getContainer()
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketUpdate.toString())
+                .setValue(timeStamp);
 
-	public void removeTicket(Object ticket) {
-		if (ticket != null) {
-			LOG.trace("now deleting ticket: " + ticket.toString());
-			ticketsSQLContainer.getContainer().removeItem(ticket);
-			commitToContainer();
-		} else {
-			LOG.trace("Cannot delete null ticket");
-		}
-	}
+        LOG.trace("now trying to add new ticket: " + ticketId.toString());
+        commitToContainer();
+        Object newRowId = ticketsSQLContainer.getContainer().getItem(ticketsSQLContainer.getNewRowId());
 
-	@SuppressWarnings("unchecked")
-	public void saveTicket(FieldGroup fieldGroup, Table ticketTable,
-			ComboBox categoryComboBox, ComboBox priorityComboBox,
-			ComboBox statusComboBox3) {
-		LOG.trace("now trying to save ticket");
+        if (newRowId != null) {
+            LOG.trace("Selecting new row in table: " + newRowId);
+            ticketList.select(newRowId);
+        } else {
+            // this is workaround because seems that RowChangeId listener is not working
+            Object lastRowId = ticketsSQLContainer.getContainer().lastItemId();
+            LOG.trace("Selecting last row in table: " + lastRowId);
+            ticketList.select(lastRowId);
+        }
+    }
 
-		commitFieldGroup(fieldGroup);
+    public void removeTicket(Object ticket) {
+        if (ticket != null) {
+            LOG.trace("now deleting ticket: " + ticket.toString());
+            ticketsSQLContainer.getContainer().removeItem(ticket);
+            commitToContainer();
+        } else {
+            LOG.trace("Cannot delete null ticket");
+        }
+    }
 
-		String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm")
-				.format(Calendar.getInstance().getTime());
-		ticketsSQLContainer
-				.getContainer()
-				.getContainerProperty(ticketTable.getValue(),
-						TicketsSQLContainer.propertyIds.ticketUpdate.toString())
-				.setValue(timeStamp);
+    @SuppressWarnings("unchecked")
+    public void saveTicket(FieldGroup fieldGroup, Table ticketTable, ComboBox categoryComboBox,
+            ComboBox priorityComboBox, ComboBox statusComboBox) {
+        LOG.trace("now trying to save ticket");
 
-		ticketsSQLContainer
-				.getContainer()
-				.getContainerProperty(
-						ticketTable.getValue(),
-						TicketsSQLContainer.propertyIds.ticketCategory
-								.toString())
-				.setValue(categoryComboBox.getValue().toString());
+        commitFieldGroup(fieldGroup);
 
-		commitToContainer();
-		ticketTable.select(ticketTable.getValue());
-	}
+        ticketsSQLContainer
+                .getContainer()
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketCategory.toString())
+                .setValue(categoryComboBox.getValue().toString());
 
-	private void commitToContainer() {
-		try {
-			LOG.trace("trying to commit change to sql db");
-			ticketsSQLContainer.getContainer().commit();
-		} catch (UnsupportedOperationException e) {
-			// TODO Auto-generated catch block
-			LOG.trace("commit failed: UnsupportedOperationException" + e);
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			LOG.trace("commit failed: SQLException" + e);
-			e.printStackTrace();
-		}
-	}
+        ticketsSQLContainer
+                .getContainer()
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketPriority.toString())
+                .setValue(priorityComboBox.getValue().toString());
 
-	private void commitFieldGroup(FieldGroup fieldGroup) {
-		try {
-			LOG.trace("now trying to commit field group values");
-			fieldGroup.commit();
-		} catch (CommitException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	}
+        ticketsSQLContainer.getContainer()
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketStatus.toString())
+                .setValue(statusComboBox.getValue().toString());
+
+        String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(Calendar.getInstance().getTime());
+        ticketsSQLContainer.getContainer()
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketUpdate.toString())
+                .setValue(timeStamp);
+
+        commitToContainer();
+        ticketTable.select(ticketTable.getValue());
+    }
+
+    private void commitToContainer() {
+        try {
+            LOG.trace("trying to commit change to sql db");
+            ticketsSQLContainer.getContainer().commit();
+        } catch (UnsupportedOperationException e) {
+            // TODO Auto-generated catch block
+            LOG.trace("commit failed: UnsupportedOperationException" + e);
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            LOG.trace("commit failed: SQLException" + e);
+            e.printStackTrace();
+        }
+    }
+
+    private void commitFieldGroup(FieldGroup fieldGroup) {
+        try {
+            LOG.trace("now trying to commit field group values");
+            fieldGroup.commit();
+        } catch (CommitException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+    }
 
 }

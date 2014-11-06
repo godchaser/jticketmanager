@@ -20,8 +20,7 @@ public class TicketsSQLContainer implements Serializable {
      */
     private static final long serialVersionUID = 1L;
 
-    static final Logger LOG = LoggerFactory
-            .getLogger(TicketsSQLContainer.class);
+    static final Logger LOG = LoggerFactory.getLogger(TicketsSQLContainer.class);
 
     public static enum ticketCategories {
         FEATURE, BUG
@@ -66,10 +65,11 @@ public class TicketsSQLContainer implements Serializable {
 
     public static HashMap<String, String> getDefaultFields() {
         HashMap<String, String> defaultFields = new HashMap<String, String>();
-        defaultFields
-                .put("ticketCategory", ticketCategories.FEATURE.toString());
-        defaultFields.put("ticketStatus", ticketStatus.OPEN.toString());
-        defaultFields.put("ticketPriority", ticketPriority.NORMAL.toString());
+        defaultFields.put(propertyIds.ticketCategory.toString(), ticketCategories.FEATURE.toString());
+        defaultFields.put(propertyIds.ticketStatus.toString(), ticketStatus.OPEN.toString());
+        defaultFields.put(propertyIds.ticketPriority.toString(), ticketPriority.NORMAL.toString());
+        defaultFields.put(propertyIds.ticketSubject.toString(), "");
+        defaultFields.put(propertyIds.ticketAssignee.toString(), "");
         return defaultFields;
     }
 
@@ -78,27 +78,25 @@ public class TicketsSQLContainer implements Serializable {
             /* TableQuery and SQLContainer for - tickets */
             dbHelper = new DatabaseHelper();
 
-            TableQuery q1 = new TableQuery("tickets",
-                    dbHelper.getConnectionPool());
+            TableQuery q1 = new TableQuery("tickets", dbHelper.getConnectionPool());
             q1.setVersionColumn("version");
             ticketsContainer = new SQLContainer(q1);
             ticketsContainer.setAutoCommit(false);
-            ticketsContainer
-                    .addRowIdChangeListener(new QueryDelegate.RowIdChangeListener() {
-                        /**
+            ticketsContainer.addRowIdChangeListener(new QueryDelegate.RowIdChangeListener() {
+                /**
 						 * 
 						 */
-                        private static final long serialVersionUID = 1L;
+                private static final long serialVersionUID = 1L;
 
-                        @Override
-                        public void rowIdChange(RowIdChangeEvent event) {
-                            LOG.trace("RowId change event fired!");
-                            setOldRowId(event.getOldRowId());
-                            LOG.trace("OldRowId: " + getOldRowId().toString());
-                            setNewRowId(event.getOldRowId());
-                            LOG.trace("NewRowId: " + getNewRowId().toString());
-                        }
-                    });
+                @Override
+                public void rowIdChange(RowIdChangeEvent event) {
+                    LOG.trace("RowId change event fired!");
+                    setOldRowId(event.getOldRowId());
+                    LOG.trace("OldRowId: " + getOldRowId().toString());
+                    setNewRowId(event.getOldRowId());
+                    LOG.trace("NewRowId: " + getNewRowId().toString());
+                }
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
