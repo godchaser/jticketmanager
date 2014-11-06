@@ -1,11 +1,7 @@
-CREATE TABLE tickets (
-	ID INTEGER PRIMARY KEY AUTOINCREMENT,
-	ticketCategory text,
-	ticketStatus text,
-	ticketPriority text,
-	ticketSubject text,
-	ticketAssignee text,
-	ticketAuthor text,
-	ticketUpdate text,
-	version INTEGER DEFAULT 0 NOT NULL
-)
+DROP TABLE "tickets";
+CREATE TABLE tickets (ID INTEGER PRIMARY KEY AUTOINCREMENT, ticketCategory text, ticketStatus text, ticketPriority text, ticketSubject text, ticketAssignee text, ticketUpdate text, ticketAuthor text, version INTEGER DEFAULT 0 NOT NULL);
+INSERT INTO "tickets" VALUES(NULL,"BUG", "OPEN", "NORMAL", "Sample open bug ticket", "Samuel", "06/11/2014 11:25","Samuel",0);
+INSERT INTO "tickets" VALUES(NULL,"BUG", "ONGOING", "NORMAL", "Sample ongoing bug ticket", "Samuel", "06/11/2014 12:25","Samuel",0);
+INSERT INTO "tickets" VALUES(NULL,"BUG", "ONGOING", "HIGH", "Sample ongoing high prio bug ticket", "Samuel", "06/11/2014 14:25","Samuel",0);
+INSERT INTO "tickets" VALUES(NULL,"FEATURE", "OPEN", "LOW", "Sample open low prio feature ticket", "Samuel", "06/11/2014 15:25","Samuel",0);
+INSERT INTO "tickets" VALUES(NULL,"FEATURE", "CLOSED", "MEDIUM", "Sample closed medium prio feature ticket", "Samuel", "06/11/2014 15:26","Samuel",0);
