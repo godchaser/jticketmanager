@@ -8,11 +8,13 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
+import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
@@ -26,27 +28,25 @@ public class TicketsView extends VerticalLayout implements View {
     static final Logger LOG = LoggerFactory.getLogger(TicketsView.class);
 
     private TicketsController controller;
+    private HorizontalLayout rootPanel = new HorizontalLayout();
+    private VerticalLayout leftTicketListLayout = new VerticalLayout();
+    private HorizontalLayout bottomLeftLayout = new HorizontalLayout();
 
     private Table ticketList = new Table("Ticket List");
     private TextField ticketSearchField = new TextField();
-
     private Button addNewTicketButton = new Button("New ticket");
-    private Button removeTicketButton = new Button("Remove");
 
+    private Button removeTicketButton = new Button("Remove");
     private Button saveTicketButton = new Button("Save");;
 
-    private FormLayout editorLayout = new FormLayout();
-
+    private FormLayout rightTicketEditorLayout = new FormLayout();
     private TextField ticketIDField;
-
     private ComboBox selectCategory;
     private ComboBox selectStatus;
     private ComboBox selectPriority;
-
     private TextArea ticketSubjectField;
     private TextField ticketAsigneeField;
     private TextField ticketUpdatedField;
-
     private FieldGroup editorFields;
 
     public TicketsView(TicketsSQLContainer ticketsSQLContainerInstance) {
@@ -60,39 +60,49 @@ public class TicketsView extends VerticalLayout implements View {
 
     private void initLayout() {
         setSizeFull();
-        setSpacing(true);
+        // setSpacing(true);
         setMargin(true);
-        /* Root of the user interface component tree is set */
-        HorizontalSplitPanel splitPanel = new HorizontalSplitPanel();
-        addComponent(splitPanel);
-        /* Build the component tree */
-        VerticalLayout leftLayout = new VerticalLayout();
-        splitPanel.addComponent(leftLayout);
-        splitPanel.addComponent(editorLayout);
-        leftLayout.addComponent(ticketList);
-        HorizontalLayout bottomLeftLayout = new HorizontalLayout();
-        leftLayout.addComponent(bottomLeftLayout);
+
+        // HEADER
+        HorizontalLayout headerLayout = new HorizontalLayout();
+        Label labelWelcome = new Label("JTicket Manager");
+        labelWelcome.addStyleName(ValoTheme.LABEL_H2);
+
+        NavigationMenu navigationMenu = new NavigationMenu();
+
+        headerLayout.addComponent(labelWelcome);
+        headerLayout.addComponent(navigationMenu); 
+        
+        //TODO: this has to be fixed
+        headerLayout.setExpandRatio(labelWelcome, 1);
+        headerLayout.setExpandRatio(navigationMenu, 9);
+
+        addComponent(headerLayout);
+        addComponent(rootPanel);
+
+        // ROOT PANEL
+        rootPanel.setSizeFull();
+        rootPanel.setSpacing(true);
+        rootPanel.setMargin(true);
+        rootPanel.addComponent(leftTicketListLayout);
+        rootPanel.addComponent(rightTicketEditorLayout);
+        rootPanel.setExpandRatio(leftTicketListLayout, 5);
+        rootPanel.setExpandRatio(rightTicketEditorLayout, 1);
+
+        // LEFT PANEL
+        leftTicketListLayout.addComponent(ticketList);
+        leftTicketListLayout.addComponent(bottomLeftLayout);
         bottomLeftLayout.addComponent(ticketSearchField);
         bottomLeftLayout.addComponent(addNewTicketButton);
-        /* Set the contents in the left of the split panel to use all the space */
-        leftLayout.setSizeFull();
-        /*
-         * On the left side, expand the size of the contactList so that it uses all the space left after from
-         * bottomLeftLayout
-         */
-        leftLayout.setExpandRatio(ticketList, 1);
-        ticketList.setSizeFull();
-        /*
-         * In the bottomLeftLayout, searchField takes all the width there is after adding addNewContactButton. The
-         * height of the layout is defined by the tallest component.
-         */
+        leftTicketListLayout.setSizeFull();
         bottomLeftLayout.setWidth("100%");
         ticketSearchField.setWidth("100%");
         bottomLeftLayout.setExpandRatio(ticketSearchField, 1);
-        /* Put a little margin around the fields in the right side editor */
-        editorLayout.setMargin(true);
-        editorLayout.setSpacing(true);
-        editorLayout.setVisible(false);
+
+        // RIGHT PANEL
+        rightTicketEditorLayout.setMargin(true);
+        rightTicketEditorLayout.setSpacing(true);
+        rightTicketEditorLayout.setVisible(false);
     }
 
     private void initTicketList() {
@@ -104,16 +114,16 @@ public class TicketsView extends VerticalLayout implements View {
                 ticketList.getVisibleColumns()[1], ticketList.getVisibleColumns()[2],
                 ticketList.getVisibleColumns()[3], ticketList.getVisibleColumns()[4],
                 ticketList.getVisibleColumns()[5], ticketList.getVisibleColumns()[6] });
-        ticketList.setColumnExpandRatio(TicketsSQLContainer.propertyIds.ticketSubject.toString(), 2);
         ticketList.setSelectable(true);
         ticketList.setImmediate(true);
         ticketList.setNullSelectionAllowed(false);
+        ticketList.setSizeFull();
         ticketList.addValueChangeListener(controller.getTableValueChangeListener());
     }
 
     private void initEditor() {
-        editorLayout.addComponent(removeTicketButton);
-        editorLayout.addComponent(saveTicketButton);
+        rightTicketEditorLayout.addComponent(removeTicketButton);
+        rightTicketEditorLayout.addComponent(saveTicketButton);
 
         // EDITOR FIELDS
         // ID Category Status Priority Subject Assignee Updated
@@ -122,7 +132,7 @@ public class TicketsView extends VerticalLayout implements View {
         ticketIDField = new TextField(TicketsSQLContainer.getDbColumnsMap().get(
                 TicketsSQLContainer.propertyIds.ID.toString()));
         ticketIDField.setId(TicketsSQLContainer.propertyIds.ID.toString());
-        editorLayout.addComponent(ticketIDField);
+        rightTicketEditorLayout.addComponent(ticketIDField);
         ticketIDField.setWidth("100%");
         editorFields = new FieldGroup();
         editorFields.bind(ticketIDField, TicketsSQLContainer.propertyIds.ID.toString());
@@ -135,7 +145,7 @@ public class TicketsView extends VerticalLayout implements View {
         selectCategory.addItem(TicketsSQLContainer.ticketCategories.BUG.toString());
         selectCategory.setTextInputAllowed(false);
         selectCategory.setNewItemsAllowed(false);
-        editorLayout.addComponent(selectCategory);
+        rightTicketEditorLayout.addComponent(selectCategory);
         selectCategory.setWidth("100%");
 
         selectStatus = new ComboBox(TicketsSQLContainer.getDbColumnsMap().get(
@@ -147,7 +157,7 @@ public class TicketsView extends VerticalLayout implements View {
         selectStatus.addItem(TicketsSQLContainer.ticketStatus.CLOSED.toString());
         selectStatus.setTextInputAllowed(false);
         selectStatus.setNewItemsAllowed(false);
-        editorLayout.addComponent(selectStatus);
+        rightTicketEditorLayout.addComponent(selectStatus);
         selectStatus.setWidth("100%");
 
         selectPriority = new ComboBox(TicketsSQLContainer.getDbColumnsMap().get(
@@ -158,14 +168,14 @@ public class TicketsView extends VerticalLayout implements View {
         selectPriority.addItem(TicketsSQLContainer.ticketPriority.HIGH.toString());
         selectPriority.setTextInputAllowed(false);
         selectPriority.setNewItemsAllowed(false);
-        editorLayout.addComponent(selectPriority);
+        rightTicketEditorLayout.addComponent(selectPriority);
         selectPriority.setWidth("100%");
 
         // SUBJECT TEXTAREA
         ticketSubjectField = new TextArea(TicketsSQLContainer.getDbColumnsMap().get(
                 TicketsSQLContainer.propertyIds.ticketSubject.toString()));
         ticketSubjectField.setId(TicketsSQLContainer.propertyIds.ticketSubject.toString());
-        editorLayout.addComponent(ticketSubjectField);
+        rightTicketEditorLayout.addComponent(ticketSubjectField);
         ticketSubjectField.setWidth("100%");
         ticketSubjectField.setRows(4);
         editorFields.bind(ticketSubjectField, TicketsSQLContainer.propertyIds.ticketSubject.toString());
@@ -174,14 +184,14 @@ public class TicketsView extends VerticalLayout implements View {
         ticketAsigneeField = new TextField(TicketsSQLContainer.getDbColumnsMap().get(
                 TicketsSQLContainer.propertyIds.ticketAssignee.toString()));
         ticketAsigneeField.setId(TicketsSQLContainer.propertyIds.ticketAssignee.toString());
-        editorLayout.addComponent(ticketAsigneeField);
+        rightTicketEditorLayout.addComponent(ticketAsigneeField);
         ticketAsigneeField.setWidth("100%");
         editorFields.bind(ticketAsigneeField, TicketsSQLContainer.propertyIds.ticketAssignee.toString());
 
         ticketUpdatedField = new TextField(TicketsSQLContainer.getDbColumnsMap().get(
                 TicketsSQLContainer.propertyIds.ticketUpdate.toString()));
         ticketUpdatedField.setId(TicketsSQLContainer.propertyIds.ticketUpdate.toString());
-        editorLayout.addComponent(ticketUpdatedField);
+        rightTicketEditorLayout.addComponent(ticketUpdatedField);
         ticketUpdatedField.setWidth("100%");
         editorFields.bind(ticketUpdatedField, TicketsSQLContainer.propertyIds.ticketUpdate.toString());
 
@@ -212,7 +222,7 @@ public class TicketsView extends VerticalLayout implements View {
     }
 
     public FormLayout getEditorLayout() {
-        return editorLayout;
+        return rightTicketEditorLayout;
     }
 
     public ComboBox getSelectStatus() {

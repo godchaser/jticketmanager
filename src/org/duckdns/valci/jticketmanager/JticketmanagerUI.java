@@ -22,7 +22,6 @@ public class JticketmanagerUI extends UI {
     TicketsSQLContainer ticketsSQLContainerInstance;
 
     public static final String JTICKETMANAGER = "tickets";
-    public static final String ADDRESSBOOKEXAMPLE = "example";
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = JticketmanagerUI.class)
@@ -39,8 +38,8 @@ public class JticketmanagerUI extends UI {
         setContent(layout);
         ComponentContainerViewDisplay viewDisplay = new ComponentContainerViewDisplay(layout);
         navigator = new Navigator(UI.getCurrent(), viewDisplay);
-        navigator.addView("", new TicketsView(ticketsSQLContainerInstance));
-        navigator.addView(ADDRESSBOOKEXAMPLE, new AddressBookExample());
+        navigator.addView("", new LoginView());
+        navigator.addView(JTICKETMANAGER, new TicketsView(ticketsSQLContainerInstance));
     }
 
 }
