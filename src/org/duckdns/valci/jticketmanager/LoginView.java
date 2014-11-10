@@ -1,17 +1,19 @@
 package org.duckdns.valci.jticketmanager;
 
+import org.duckdns.valci.jticketmanager.data.TicketsSQLContainer;
+
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
 public class LoginView extends VerticalLayout implements View {
-    public LoginView() {
+    public LoginView(TicketsSQLContainer ticketsSQLContainerInstance) {    
         setSizeFull();
         setSpacing(true);
         Label labelWelcome = new Label("JTicket Manager web service");
@@ -27,6 +29,7 @@ public class LoginView extends VerticalLayout implements View {
         addComponent(username);
         addComponent(password);
         addComponent(loginButton());
+        addComponent(fillDabaseButton(ticketsSQLContainerInstance));
     }
 
     private Button loginButton() {
@@ -37,6 +40,17 @@ public class LoginView extends VerticalLayout implements View {
             }
         });
         button.setId("loginButton");
+        return button;
+    }
+    
+    private Button fillDabaseButton(final TicketsSQLContainer ticketsSQLContainerInstance) {
+        Button button = new Button("Fill Database", new Button.ClickListener() {
+            @Override
+            public void buttonClick(ClickEvent event) {
+                ticketsSQLContainerInstance.getDbHelper().fillTestData();;
+            }
+        });
+        button.setId("fillDabaseButton");
         return button;
     }
 

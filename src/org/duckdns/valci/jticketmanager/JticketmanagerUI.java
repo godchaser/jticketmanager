@@ -2,7 +2,7 @@ package org.duckdns.valci.jticketmanager;
 
 import javax.servlet.annotation.WebServlet;
 
-import org.duckdns.valci.jtricketmanager.data.TicketsSQLContainer;
+import org.duckdns.valci.jticketmanager.data.TicketsSQLContainer;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -21,7 +21,7 @@ public class JticketmanagerUI extends UI {
 
     TicketsSQLContainer ticketsSQLContainerInstance;
 
-    public static final String JTICKETMANAGER = "tickets";
+    public static final String JTICKETMANAGER = TicketsSQLContainer.TABLE;
 
     @WebServlet(value = "/*", asyncSupported = true)
     @VaadinServletConfiguration(productionMode = false, ui = JticketmanagerUI.class)
@@ -38,7 +38,7 @@ public class JticketmanagerUI extends UI {
         setContent(layout);
         ComponentContainerViewDisplay viewDisplay = new ComponentContainerViewDisplay(layout);
         navigator = new Navigator(UI.getCurrent(), viewDisplay);
-        navigator.addView("", new LoginView());
+        navigator.addView("", new LoginView(ticketsSQLContainerInstance));
         navigator.addView(JTICKETMANAGER, new TicketsView(ticketsSQLContainerInstance));
     }
 

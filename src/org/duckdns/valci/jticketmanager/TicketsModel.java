@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import org.duckdns.valci.jtricketmanager.data.TicketsSQLContainer;
+import org.duckdns.valci.jticketmanager.data.TicketsSQLContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,44 +39,44 @@ public class TicketsModel implements Serializable {
 
         ticketsSQLContainer
                 .getContainer()
-                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketCategory.toString())
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.TICKETCATEGORY.toString())
                 .setValue(
                         TicketsSQLContainer.getDefaultFields().get(
-                                TicketsSQLContainer.propertyIds.ticketCategory.toString()));
+                                TicketsSQLContainer.propertyIds.TICKETCATEGORY.toString()));
 
         ticketsSQLContainer
                 .getContainer()
-                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketPriority.toString())
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString())
                 .setValue(
                         TicketsSQLContainer.getDefaultFields().get(
-                                TicketsSQLContainer.propertyIds.ticketPriority.toString()));
+                                TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString()));
 
         ticketsSQLContainer
                 .getContainer()
-                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketStatus.toString())
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.TICKETSTATUS.toString())
                 .setValue(
                         TicketsSQLContainer.getDefaultFields().get(
-                                TicketsSQLContainer.propertyIds.ticketStatus.toString()));
+                                TicketsSQLContainer.propertyIds.TICKETSTATUS.toString()));
 
         ticketsSQLContainer
                 .getContainer()
-                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketSubject.toString())
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString())
                 .setValue(
                         TicketsSQLContainer.getDefaultFields().get(
-                                TicketsSQLContainer.propertyIds.ticketSubject.toString()));
+                                TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString()));
 
         ticketsSQLContainer
                 .getContainer()
-                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketAssignee.toString())
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.TICKETASSIGNEE.toString())
                 .setValue(
                         TicketsSQLContainer.getDefaultFields().get(
-                                TicketsSQLContainer.propertyIds.ticketAssignee.toString()));
+                                TicketsSQLContainer.propertyIds.TICKETASSIGNEE.toString()));
 
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(Calendar.getInstance().getTime());
 
         LOG.trace("Setting timestamp" + timeStamp);
         ticketsSQLContainer.getContainer()
-                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.ticketUpdate.toString())
+                .getContainerProperty(ticketId, TicketsSQLContainer.propertyIds.TICKETUPDATE.toString())
                 .setValue(timeStamp);
 
         LOG.trace("now trying to add new ticket: " + ticketId.toString());
@@ -113,21 +113,21 @@ public class TicketsModel implements Serializable {
 
         ticketsSQLContainer
                 .getContainer()
-                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketCategory.toString())
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.TICKETCATEGORY.toString())
                 .setValue(categoryComboBox.getValue().toString());
 
         ticketsSQLContainer
                 .getContainer()
-                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketPriority.toString())
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString())
                 .setValue(priorityComboBox.getValue().toString());
 
         ticketsSQLContainer.getContainer()
-                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketStatus.toString())
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.TICKETSTATUS.toString())
                 .setValue(statusComboBox.getValue().toString());
 
         String timeStamp = new SimpleDateFormat("dd/MM/yyyy HH:mm").format(Calendar.getInstance().getTime());
         ticketsSQLContainer.getContainer()
-                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.ticketUpdate.toString())
+                .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.TICKETUPDATE.toString())
                 .setValue(timeStamp);
 
         commitToContainer();

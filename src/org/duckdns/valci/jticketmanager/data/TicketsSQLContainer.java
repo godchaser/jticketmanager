@@ -1,4 +1,4 @@
-package org.duckdns.valci.jtricketmanager.data;
+package org.duckdns.valci.jticketmanager.data;
 
 import java.io.Serializable;
 import java.sql.SQLException;
@@ -22,6 +22,8 @@ public class TicketsSQLContainer implements Serializable {
 
     static final Logger LOG = LoggerFactory.getLogger(TicketsSQLContainer.class);
 
+    public static final String TABLE = "tickets";
+
     public static enum ticketCategories {
         FEATURE, BUG
     }
@@ -35,7 +37,7 @@ public class TicketsSQLContainer implements Serializable {
     }
 
     public static enum propertyIds {
-        ID, ticketCategory, ticketStatus, ticketPriority, ticketSubject, ticketAssignee, ticketUpdate;
+        ID, TICKETCATEGORY, TICKETSTATUS, TICKETPRIORITY, TICKETSUBJECT, TICKETASSIGNEE, TICKETUPDATE, TICKETAUTHOR, VERSION;
     }
 
     private DatabaseHelper dbHelper = null;
@@ -54,22 +56,22 @@ public class TicketsSQLContainer implements Serializable {
     public static LinkedHashMap<String, String> getDbColumnsMap() {
         LinkedHashMap<String, String> propertyIdsMap = new LinkedHashMap<String, String>();
         propertyIdsMap.put(propertyIds.ID.toString(), "#");
-        propertyIdsMap.put(propertyIds.ticketCategory.toString(), "Category");
-        propertyIdsMap.put(propertyIds.ticketStatus.toString(), "Status");
-        propertyIdsMap.put(propertyIds.ticketPriority.toString(), "Priority");
-        propertyIdsMap.put(propertyIds.ticketSubject.toString(), "Subject");
-        propertyIdsMap.put(propertyIds.ticketAssignee.toString(), "Assignee");
-        propertyIdsMap.put(propertyIds.ticketUpdate.toString(), "Updated");
+        propertyIdsMap.put(propertyIds.TICKETCATEGORY.toString(), "Category");
+        propertyIdsMap.put(propertyIds.TICKETSTATUS.toString(), "Status");
+        propertyIdsMap.put(propertyIds.TICKETPRIORITY.toString(), "Priority");
+        propertyIdsMap.put(propertyIds.TICKETSUBJECT.toString(), "Subject");
+        propertyIdsMap.put(propertyIds.TICKETASSIGNEE.toString(), "Assignee");
+        propertyIdsMap.put(propertyIds.TICKETUPDATE.toString(), "Updated");
         return propertyIdsMap;
     }
 
     public static HashMap<String, String> getDefaultFields() {
         HashMap<String, String> defaultFields = new HashMap<String, String>();
-        defaultFields.put(propertyIds.ticketCategory.toString(), ticketCategories.FEATURE.toString());
-        defaultFields.put(propertyIds.ticketStatus.toString(), ticketStatus.OPEN.toString());
-        defaultFields.put(propertyIds.ticketPriority.toString(), ticketPriority.NORMAL.toString());
-        defaultFields.put(propertyIds.ticketSubject.toString(), "");
-        defaultFields.put(propertyIds.ticketAssignee.toString(), "");
+        defaultFields.put(propertyIds.TICKETCATEGORY.toString(), ticketCategories.FEATURE.toString());
+        defaultFields.put(propertyIds.TICKETSTATUS.toString(), ticketStatus.OPEN.toString());
+        defaultFields.put(propertyIds.TICKETPRIORITY.toString(), ticketPriority.NORMAL.toString());
+        defaultFields.put(propertyIds.TICKETSUBJECT.toString(), "");
+        defaultFields.put(propertyIds.TICKETASSIGNEE.toString(), "");
         return defaultFields;
     }
 
@@ -78,8 +80,8 @@ public class TicketsSQLContainer implements Serializable {
             /* TableQuery and SQLContainer for - tickets */
             dbHelper = new DatabaseHelper();
 
-            TableQuery q1 = new TableQuery("tickets", dbHelper.getConnectionPool());
-            q1.setVersionColumn("version");
+            TableQuery q1 = new TableQuery(TABLE, dbHelper.getConnectionPool());
+            q1.setVersionColumn(propertyIds.VERSION.toString());
             ticketsContainer = new SQLContainer(q1);
             ticketsContainer.setAutoCommit(false);
             ticketsContainer.addRowIdChangeListener(new QueryDelegate.RowIdChangeListener() {
@@ -116,5 +118,9 @@ public class TicketsSQLContainer implements Serializable {
 
     public void setNewRowId(Object newRowId) {
         this.newRowId = newRowId;
+    }
+
+    public DatabaseHelper getDbHelper() {
+        return dbHelper;
     }
 }

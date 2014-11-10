@@ -1,6 +1,6 @@
 package org.duckdns.valci.jticketmanager;
 
-import org.duckdns.valci.jtricketmanager.data.TicketsSQLContainer;
+import org.duckdns.valci.jticketmanager.data.TicketsSQLContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,17 +8,16 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.ui.AbstractTextField.TextChangeEventMode;
-import com.vaadin.ui.themes.ValoTheme;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.ValoTheme;
 
 public class TicketsView extends VerticalLayout implements View {
     /**
@@ -70,12 +69,13 @@ public class TicketsView extends VerticalLayout implements View {
 
         NavigationMenu navigationMenu = new NavigationMenu();
 
+        headerLayout.setWidth("100%");
         headerLayout.addComponent(labelWelcome);
-        headerLayout.addComponent(navigationMenu); 
-        
-        //TODO: this has to be fixed
-        headerLayout.setExpandRatio(labelWelcome, 1);
-        headerLayout.setExpandRatio(navigationMenu, 9);
+        headerLayout.addComponent(navigationMenu);
+
+        // TODO: this has to be fixed
+        headerLayout.setExpandRatio(labelWelcome, 9);
+        headerLayout.setExpandRatio(navigationMenu, 1);
 
         addComponent(headerLayout);
         addComponent(rootPanel);
@@ -86,7 +86,7 @@ public class TicketsView extends VerticalLayout implements View {
         rootPanel.setMargin(true);
         rootPanel.addComponent(leftTicketListLayout);
         rootPanel.addComponent(rightTicketEditorLayout);
-        rootPanel.setExpandRatio(leftTicketListLayout, 5);
+        rootPanel.setExpandRatio(leftTicketListLayout, 4);
         rootPanel.setExpandRatio(rightTicketEditorLayout, 1);
 
         // LEFT PANEL
@@ -118,6 +118,7 @@ public class TicketsView extends VerticalLayout implements View {
         ticketList.setImmediate(true);
         ticketList.setNullSelectionAllowed(false);
         ticketList.setSizeFull();
+        ticketList.setWidth("100%");
         ticketList.addValueChangeListener(controller.getTableValueChangeListener());
     }
 
@@ -139,8 +140,8 @@ public class TicketsView extends VerticalLayout implements View {
 
         // COMBOBOXES
         selectCategory = new ComboBox(TicketsSQLContainer.getDbColumnsMap().get(
-                TicketsSQLContainer.propertyIds.ticketCategory.toString()));
-        selectCategory.setId(TicketsSQLContainer.propertyIds.ticketCategory.toString());
+                TicketsSQLContainer.propertyIds.TICKETCATEGORY.toString()));
+        selectCategory.setId(TicketsSQLContainer.propertyIds.TICKETCATEGORY.toString());
         selectCategory.addItem(TicketsSQLContainer.ticketCategories.FEATURE.toString());
         selectCategory.addItem(TicketsSQLContainer.ticketCategories.BUG.toString());
         selectCategory.setTextInputAllowed(false);
@@ -149,8 +150,8 @@ public class TicketsView extends VerticalLayout implements View {
         selectCategory.setWidth("100%");
 
         selectStatus = new ComboBox(TicketsSQLContainer.getDbColumnsMap().get(
-                TicketsSQLContainer.propertyIds.ticketStatus.toString()));
-        selectStatus.setId(TicketsSQLContainer.propertyIds.ticketStatus.toString());
+                TicketsSQLContainer.propertyIds.TICKETSTATUS.toString()));
+        selectStatus.setId(TicketsSQLContainer.propertyIds.TICKETSTATUS.toString());
         selectStatus.addItem(TicketsSQLContainer.ticketStatus.OPEN.toString());
         selectStatus.addItem(TicketsSQLContainer.ticketStatus.ONGOING.toString());
         selectStatus.addItem(TicketsSQLContainer.ticketStatus.FEEDBACK.toString());
@@ -161,8 +162,8 @@ public class TicketsView extends VerticalLayout implements View {
         selectStatus.setWidth("100%");
 
         selectPriority = new ComboBox(TicketsSQLContainer.getDbColumnsMap().get(
-                TicketsSQLContainer.propertyIds.ticketPriority.toString()));
-        selectPriority.setId(TicketsSQLContainer.propertyIds.ticketPriority.toString());
+                TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString()));
+        selectPriority.setId(TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString());
         selectPriority.addItem(TicketsSQLContainer.ticketPriority.LOW.toString());
         selectPriority.addItem(TicketsSQLContainer.ticketPriority.NORMAL.toString());
         selectPriority.addItem(TicketsSQLContainer.ticketPriority.HIGH.toString());
@@ -173,27 +174,27 @@ public class TicketsView extends VerticalLayout implements View {
 
         // SUBJECT TEXTAREA
         ticketSubjectField = new TextArea(TicketsSQLContainer.getDbColumnsMap().get(
-                TicketsSQLContainer.propertyIds.ticketSubject.toString()));
-        ticketSubjectField.setId(TicketsSQLContainer.propertyIds.ticketSubject.toString());
+                TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString()));
+        ticketSubjectField.setId(TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString());
         rightTicketEditorLayout.addComponent(ticketSubjectField);
         ticketSubjectField.setWidth("100%");
         ticketSubjectField.setRows(4);
-        editorFields.bind(ticketSubjectField, TicketsSQLContainer.propertyIds.ticketSubject.toString());
+        editorFields.bind(ticketSubjectField, TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString());
 
         // OTHER FIELDS
         ticketAsigneeField = new TextField(TicketsSQLContainer.getDbColumnsMap().get(
-                TicketsSQLContainer.propertyIds.ticketAssignee.toString()));
-        ticketAsigneeField.setId(TicketsSQLContainer.propertyIds.ticketAssignee.toString());
+                TicketsSQLContainer.propertyIds.TICKETASSIGNEE.toString()));
+        ticketAsigneeField.setId(TicketsSQLContainer.propertyIds.TICKETASSIGNEE.toString());
         rightTicketEditorLayout.addComponent(ticketAsigneeField);
         ticketAsigneeField.setWidth("100%");
-        editorFields.bind(ticketAsigneeField, TicketsSQLContainer.propertyIds.ticketAssignee.toString());
+        editorFields.bind(ticketAsigneeField, TicketsSQLContainer.propertyIds.TICKETASSIGNEE.toString());
 
         ticketUpdatedField = new TextField(TicketsSQLContainer.getDbColumnsMap().get(
-                TicketsSQLContainer.propertyIds.ticketUpdate.toString()));
-        ticketUpdatedField.setId(TicketsSQLContainer.propertyIds.ticketUpdate.toString());
+                TicketsSQLContainer.propertyIds.TICKETUPDATE.toString()));
+        ticketUpdatedField.setId(TicketsSQLContainer.propertyIds.TICKETUPDATE.toString());
         rightTicketEditorLayout.addComponent(ticketUpdatedField);
         ticketUpdatedField.setWidth("100%");
-        editorFields.bind(ticketUpdatedField, TicketsSQLContainer.propertyIds.ticketUpdate.toString());
+        editorFields.bind(ticketUpdatedField, TicketsSQLContainer.propertyIds.TICKETUPDATE.toString());
 
         editorFields.setBuffered(true);
     }

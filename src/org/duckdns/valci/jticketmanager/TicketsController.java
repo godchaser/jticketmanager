@@ -1,8 +1,8 @@
 package org.duckdns.valci.jticketmanager;
 
 import java.io.Serializable;
-import org.duckdns.valci.jtricketmanager.data.TicketsSQLContainer;
 
+import org.duckdns.valci.jticketmanager.data.TicketsSQLContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public class TicketsController implements Serializable {
                 LOG.trace("New ticket button clicked");
                 model.addNewTicket(view.getTicketList(), view.getEditorFields());
                 LOG.trace("Setting focus on subject field");
-                view.getEditorFields().getField(TicketsSQLContainer.propertyIds.ticketSubject.toString()).focus();
+                view.getEditorFields().getField(TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString()).focus();
                 LOG.trace("Clearing subject field");
                 view.getTicketSubjectField().setValue("");
                 break;
@@ -80,7 +80,7 @@ public class TicketsController implements Serializable {
             LOG.trace("Using search filter for tickets subjects: " + event.getText());
             model.getTicketsSQLContainer()
                     .getContainer()
-                    .addContainerFilter(TicketsSQLContainer.propertyIds.ticketSubject.toString(), event.getText(),
+                    .addContainerFilter(TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString(), event.getText(),
                             true, false);
         }
     }
@@ -101,22 +101,22 @@ public class TicketsController implements Serializable {
                 // UPDATE EDITOR FIELDS
                 view.getEditorFields().setItemDataSource(view.getTicketList().getItem(ticketId));
                 // this is for disabling UPDATE timestamp field
-                view.getEditorFields().getField(TicketsSQLContainer.propertyIds.ticketUpdate.toString())
+                view.getEditorFields().getField(TicketsSQLContainer.propertyIds.TICKETUPDATE.toString())
                         .setReadOnly(true);
 
                 // UPDATE COMBOBOXES
                 Object ticketCategory = view.getTicketList().getItem(ticketId)
-                        .getItemProperty(TicketsSQLContainer.propertyIds.ticketCategory.toString()).getValue();
+                        .getItemProperty(TicketsSQLContainer.propertyIds.TICKETCATEGORY.toString()).getValue();
                 LOG.trace("Selecting ticketCategory: " + ticketCategory);
                 view.getSelectCategory().select(ticketCategory);
 
                 Object ticketStatus = view.getTicketList().getItem(ticketId)
-                        .getItemProperty(TicketsSQLContainer.propertyIds.ticketStatus.toString()).getValue();
+                        .getItemProperty(TicketsSQLContainer.propertyIds.TICKETSTATUS.toString()).getValue();
                 LOG.trace("Selecting ticketStatus: " + ticketStatus);
                 view.getSelectStatus().select(ticketStatus);
 
                 Object ticketPriority = view.getTicketList().getItem(ticketId)
-                        .getItemProperty(TicketsSQLContainer.propertyIds.ticketPriority.toString()).getValue();
+                        .getItemProperty(TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString()).getValue();
                 LOG.trace("Selecting ticketPriority: " + ticketPriority);
                 view.getSelectPriority().select(ticketPriority);
             } else {
