@@ -15,6 +15,10 @@ For ticket database [HSQLDB](http://hsqldb.org/) database is used.
 
 Web service is built on [Vaadin framework](https://www.vaadin.com)
 
+<div align="center">
+<img width="100%" src="screen-shots/JTicketManagerScreenshot1.png" alt="JTicket Manager GUI" title="Main GUI"</img>
+</div>
+
 License
 -------
 
