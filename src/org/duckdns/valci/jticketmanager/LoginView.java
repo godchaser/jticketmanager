@@ -1,6 +1,6 @@
 package org.duckdns.valci.jticketmanager;
 
-import org.duckdns.valci.jticketmanager.data.TicketsSQLContainer;
+import org.duckdns.valci.jticketmanager.data.DatabaseHelper;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -13,7 +13,7 @@ import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
 public class LoginView extends VerticalLayout implements View {
-    public LoginView(TicketsSQLContainer ticketsSQLContainerInstance) {    
+    public LoginView() {    
         setSizeFull();
         setSpacing(true);
         Label labelWelcome = new Label("JTicket Manager web service");
@@ -29,13 +29,14 @@ public class LoginView extends VerticalLayout implements View {
         addComponent(username);
         addComponent(password);
         addComponent(loginButton());
-        addComponent(fillDabaseButton(ticketsSQLContainerInstance));
+        addComponent(fillDabaseButton());
     }
 
     private Button loginButton() {
         Button button = new Button("Log In", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
+                DatabaseHelper dh = DatabaseHelper.getInstance();
                 getUI().getNavigator().navigateTo(JticketmanagerUI.JTICKETMANAGER);
             }
         });
@@ -43,11 +44,12 @@ public class LoginView extends VerticalLayout implements View {
         return button;
     }
     
-    private Button fillDabaseButton(final TicketsSQLContainer ticketsSQLContainerInstance) {
+    private Button fillDabaseButton() {
         Button button = new Button("Fill Database", new Button.ClickListener() {
             @Override
             public void buttonClick(ClickEvent event) {
-                ticketsSQLContainerInstance.getDbHelper().fillTestData();;
+                DatabaseHelper dh = DatabaseHelper.getInstance();
+                dh.fillTestData();
             }
         });
         button.setId("fillDabaseButton");
@@ -57,6 +59,5 @@ public class LoginView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeEvent event) {
         // TODO Auto-generated method stub
-
     }
 }

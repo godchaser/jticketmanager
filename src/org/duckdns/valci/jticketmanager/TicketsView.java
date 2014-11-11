@@ -48,8 +48,8 @@ public class TicketsView extends VerticalLayout implements View {
     private TextField ticketUpdatedField;
     private FieldGroup editorFields;
 
-    public TicketsView(TicketsSQLContainer ticketsSQLContainerInstance) {
-        this.controller = new TicketsController(this, ticketsSQLContainerInstance);
+    public TicketsView() {
+        this.controller = new TicketsController(this);
         initLayout();
         initTicketList();
         initEditor();
@@ -69,7 +69,10 @@ public class TicketsView extends VerticalLayout implements View {
 
         NavigationMenu navigationMenu = new NavigationMenu();
 
+        headerLayout.setSizeFull();
         headerLayout.setWidth("100%");
+        headerLayout.setSpacing(true);
+        headerLayout.setMargin(true);
         headerLayout.addComponent(labelWelcome);
         headerLayout.addComponent(navigationMenu);
 
@@ -95,6 +98,7 @@ public class TicketsView extends VerticalLayout implements View {
         bottomLeftLayout.addComponent(ticketSearchField);
         bottomLeftLayout.addComponent(addNewTicketButton);
         leftTicketListLayout.setSizeFull();
+        leftTicketListLayout.setExpandRatio(ticketList, 1);
         bottomLeftLayout.setWidth("100%");
         ticketSearchField.setWidth("100%");
         bottomLeftLayout.setExpandRatio(ticketSearchField, 1);
@@ -244,7 +248,13 @@ public class TicketsView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeEvent event) {
-        // TODO Auto-generated method stub
-
+        LOG.trace("Enter View event fired");
+        // if (!initializedFlag) {
+        // LOG.trace("View not initialized yet, initizalizing");
+        // initView();
+        // } else {
+        // LOG.trace("View already initialized");
+        // }
     }
+
 }

@@ -34,6 +34,7 @@ public class NavigationMenu extends CustomComponent {
         public void menuSelected(final MenuItem selectedItem) {
             LOG.trace("Logout button clicked - closing session");
             getUI().getSession().close();
+            LOG.trace("Redirecting to logout view");
             getUI().getPage().setLocation(getLogoutPath());
         }
     };

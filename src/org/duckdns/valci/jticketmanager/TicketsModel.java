@@ -11,7 +11,9 @@ import org.slf4j.LoggerFactory;
 
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.fieldgroup.FieldGroup.CommitException;
+import com.vaadin.data.util.sqlcontainer.OptimisticLockException;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 
 public class TicketsModel implements Serializable {
@@ -20,19 +22,24 @@ public class TicketsModel implements Serializable {
      */
     private static final long serialVersionUID = 1L;
     private TicketsSQLContainer ticketsSQLContainer;
+    
+    private TicketsController controller;
 
     static final Logger LOG = LoggerFactory.getLogger(TicketsModel.class);
 
-    public TicketsModel(TicketsSQLContainer ticketsSQLContainerInstance) {
-        ticketsSQLContainer = ticketsSQLContainerInstance;
+    public TicketsModel(TicketsController ticketController) {
+        LOG.trace("Model instance created and Ticket SQL DB Container initialized");
+        ticketsSQLContainer = new TicketsSQLContainer();
+        this.controller = ticketController;
     }
 
     public TicketsSQLContainer getTicketsSQLContainer() {
+        // initDatabase();
         return ticketsSQLContainer;
     }
 
     @SuppressWarnings("unchecked")
-    public void addNewTicket(Table ticketList, FieldGroup fieldGroup) {
+    public void addNewTicket() {
         ticketsSQLContainer.getContainer().removeAllContainerFilters();
         Object ticketId = ticketsSQLContainer.getContainer().addItem();
         LOG.trace("Setting default values to container");
@@ -80,17 +87,20 @@ public class TicketsModel implements Serializable {
                 .setValue(timeStamp);
 
         LOG.trace("now trying to add new ticket: " + ticketId.toString());
-        commitToContainer();
-        Object newRowId = ticketsSQLContainer.getContainer().getItem(ticketsSQLContainer.getNewRowId());
+        if (commitToContainer()) {
+            LOG.trace("commit success, selecting updated value");
+            Object newRowId = ticketsSQLContainer.getContainer().getItem(ticketsSQLContainer.getNewRowId());
 
-        if (newRowId != null) {
-            LOG.trace("Selecting new row in table: " + newRowId);
-            ticketList.select(newRowId);
-        } else {
-            // this is workaround because seems that RowChangeId listener is not working
-            Object lastRowId = ticketsSQLContainer.getContainer().lastItemId();
-            LOG.trace("Selecting last row in table: " + lastRowId);
-            ticketList.select(lastRowId);
+            if (newRowId != null) {
+                LOG.trace("Updated new row in table: " + newRowId);
+                controller.updatedRow(newRowId);
+            } else {
+                // this is workaround because seems that RowChangeId listener is not
+                // working
+                Object lastRowId = ticketsSQLContainer.getContainer().lastItemId();
+                LOG.trace("Updated new row in table: " + lastRowId);
+                controller.updatedRow(lastRowId);
+            }
         }
     }
 
@@ -103,6 +113,8 @@ public class TicketsModel implements Serializable {
             LOG.trace("Cannot delete null ticket");
         }
     }
+    
+    //TODO: this has to be decoupled
 
     @SuppressWarnings("unchecked")
     public void saveTicket(FieldGroup fieldGroup, Table ticketTable, ComboBox categoryComboBox,
@@ -130,14 +142,18 @@ public class TicketsModel implements Serializable {
                 .getContainerProperty(ticketTable.getValue(), TicketsSQLContainer.propertyIds.TICKETUPDATE.toString())
                 .setValue(timeStamp);
 
-        commitToContainer();
-        ticketTable.select(ticketTable.getValue());
+        if (commitToContainer()) {
+            LOG.trace("commit success, selecting updated value");
+            ticketTable.select(ticketTable.getValue());
+        }
     }
 
-    private void commitToContainer() {
+    private boolean commitToContainer() {
+        boolean commitSuccess = false;
         try {
             LOG.trace("trying to commit change to sql db");
             ticketsSQLContainer.getContainer().commit();
+            commitSuccess = true;
         } catch (UnsupportedOperationException e) {
             // TODO Auto-generated catch block
             LOG.trace("commit failed: UnsupportedOperationException" + e);
@@ -146,7 +162,13 @@ public class TicketsModel implements Serializable {
             // TODO Auto-generated catch block
             LOG.trace("commit failed: SQLException" + e);
             e.printStackTrace();
+        } catch (OptimisticLockException e) {
+            LOG.trace("Caught OptimisticLockException, should refresh page - mid air collision");
+            Notification.show("Mid air collision detected",
+                    "Someone already updated ticket you are using, refreshing page", Notification.Type.WARNING_MESSAGE);
+            e.printStackTrace();
         }
+        return commitSuccess;
     }
 
     private void commitFieldGroup(FieldGroup fieldGroup) {
@@ -159,4 +181,9 @@ public class TicketsModel implements Serializable {
         }
     }
 
+    /*
+     * public void initDatabase() { if (ticketsSQLContainer == null) { LOG.trace("Creating Ticket SQL DB Container");
+     * ticketsSQLContainer = new TicketsSQLContainer(); } else { LOG.trace("Ticket SQL DB Container already created"); }
+     * }
+     */
 }

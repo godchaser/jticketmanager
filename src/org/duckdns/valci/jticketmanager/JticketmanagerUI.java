@@ -19,8 +19,6 @@ public class JticketmanagerUI extends UI {
     public Navigator navigator;
     VerticalLayout layout;
 
-    TicketsSQLContainer ticketsSQLContainerInstance;
-
     public static final String JTICKETMANAGER = TicketsSQLContainer.TABLE;
 
     @WebServlet(value = "/*", asyncSupported = true)
@@ -30,16 +28,14 @@ public class JticketmanagerUI extends UI {
 
     @Override
     protected void init(VaadinRequest request) {
-
-        ticketsSQLContainerInstance = new TicketsSQLContainer();
         layout = new VerticalLayout();
         layout.setMargin(true);
         layout.setSpacing(true);
         setContent(layout);
         ComponentContainerViewDisplay viewDisplay = new ComponentContainerViewDisplay(layout);
         navigator = new Navigator(UI.getCurrent(), viewDisplay);
-        navigator.addView("", new LoginView(ticketsSQLContainerInstance));
-        navigator.addView(JTICKETMANAGER, new TicketsView(ticketsSQLContainerInstance));
+        navigator.addView("", new LoginView());
+        navigator.addView(JTICKETMANAGER, new TicketsView());
     }
 
 }

@@ -29,9 +29,9 @@ public class TicketsController implements Serializable {
     private ButtonClickListener buttonClickListener;
     private TableValueChangeListener tableValueChangeListener;
 
-    public TicketsController(TicketsView view, TicketsSQLContainer ticketsSQLContainerInstance) {
-        this.model = new TicketsModel(ticketsSQLContainerInstance);
+    public TicketsController(TicketsView view) {
         this.view = view;
+        this.model = new TicketsModel(this);
         this.setSearchFieldTextChangeListener(new SearchFieldTextChangeListener());
         this.setButtonClickListener(new ButtonClickListener());
         this.setTableValueChangeListener(new TableValueChangeListener());
@@ -46,7 +46,7 @@ public class TicketsController implements Serializable {
             switch (event.getButton().getId()) {
             case ("addNewTicketButton"):
                 LOG.trace("New ticket button clicked");
-                model.addNewTicket(view.getTicketList(), view.getEditorFields());
+                model.addNewTicket();
                 LOG.trace("Setting focus on subject field");
                 view.getEditorFields().getField(TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString()).focus();
                 LOG.trace("Clearing subject field");
@@ -119,6 +119,7 @@ public class TicketsController implements Serializable {
                         .getItemProperty(TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString()).getValue();
                 LOG.trace("Selecting ticketPriority: " + ticketPriority);
                 view.getSelectPriority().select(ticketPriority);
+                view.getTicketList().setSizeFull();
             } else {
                 LOG.trace("TicketId is null");
             }
@@ -152,6 +153,11 @@ public class TicketsController implements Serializable {
 
     public SQLContainer getTicketsSQLContainer() {
         return model.getTicketsSQLContainer().getContainer();
+    }
+
+    public void updatedRow(Object newRowId) {
+        LOG.trace("Selecting row in table: " + newRowId);
+        view.getTicketList().select(newRowId);
     }
 
 }

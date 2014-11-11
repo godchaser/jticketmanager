@@ -25,8 +25,14 @@ public class DatabaseHelper implements Serializable {
 
     static final Logger LOG = LoggerFactory.getLogger(DatabaseHelper.class);
 
+    // SINGLETON PATTERN
+    private static DatabaseHelper instance = null;
+
     private String basepath = VaadinService.getCurrent().getBaseDirectory().getAbsolutePath();
-    private FileResource dbFile = new FileResource(new File(basepath + "/WEB-INF/resources/" + TicketsSQLContainer.TABLE + ".sql"));
+    private FileResource dbFile = new FileResource(new File(basepath + "/WEB-INF/resources/"
+            + TicketsSQLContainer.TABLE + ".sql"));
+
+    private JDBCConnectionPool connectionPool = null;
 
     //@formatter:off
     private String dropTableCMD = "DROP TABLE "+ TicketsSQLContainer.TABLE;
@@ -52,11 +58,21 @@ public class DatabaseHelper implements Serializable {
     private String deleteAllDataCMD = "delete from " + TicketsSQLContainer.TABLE;
 
     //@formatter:on
-    private JDBCConnectionPool connectionPool = null;
 
-    public DatabaseHelper() {
+    private DatabaseHelper() {
         initConnectionPool();
         initDatabase();
+        // if (fillTestData)
+        // fillTestData();
+    }
+
+    public static DatabaseHelper getInstance() {
+        if (instance == null) {
+            LOG.trace("Instantiating DatabaseHelper");
+            instance = new DatabaseHelper();
+        }
+        LOG.trace("Returning already instantiated DatabaseHelper");
+        return instance;
     }
 
     public void fillTestData() {
@@ -65,7 +81,7 @@ public class DatabaseHelper implements Serializable {
         LOG.trace("Loading sample data");
         executeSQLCommand(insertSampleDataCMD);
         LOG.trace("Selecting data");
-        //executeSQLQuerry(testTableCMD);
+        // executeSQLQuerry(testTableCMD);
         executeSQLQuerry(testTableDataCMD);
     }
 
@@ -73,9 +89,13 @@ public class DatabaseHelper implements Serializable {
         try {
             String dbPath = dbFile.getSourceFile().getCanonicalPath();
             LOG.trace("Creating Connection Pool " + dbPath);
-            // connectionPool = new SimpleJDBCConnectionPool("org.sqlite.JDBC", "jdbc:sqlite:" + dbPath, "", "", 2, 5);
-            //  connectionPool = new SimpleJDBCConnectionPool("org.hsqldb.jdbc.JDBCDriver", "jdbc:hsqldb:mem:sqlcontainer" + dbPath, "", "", 2, 5);
-            connectionPool = new SimpleJDBCConnectionPool("org.hsqldb.jdbc.JDBCDriver", "jdbc:hsqldb:" + dbPath, "", "", 2, 5);
+            // connectionPool = new SimpleJDBCConnectionPool("org.sqlite.JDBC",
+            // "jdbc:sqlite:" + dbPath, "", "", 2, 5);
+            // connectionPool = new
+            // SimpleJDBCConnectionPool("org.hsqldb.jdbc.JDBCDriver",
+            // "jdbc:hsqldb:mem:sqlcontainer" + dbPath, "", "", 2, 5);
+            connectionPool = new SimpleJDBCConnectionPool("org.hsqldb.jdbc.JDBCDriver", "jdbc:hsqldb:" + dbPath, "",
+                    "", 2, 5);
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -130,7 +150,7 @@ public class DatabaseHelper implements Serializable {
                 ResultSetMetaData rsmd = rs.getMetaData();
                 PrintColumnTypes.printColTypes(rsmd);
                 int numberOfColumns = rsmd.getColumnCount();
-                
+
                 for (int i = 1; i <= numberOfColumns; i++) {
                     if (i > 1)
                         LOG.trace(",  ");
@@ -161,6 +181,11 @@ public class DatabaseHelper implements Serializable {
 
     public JDBCConnectionPool getConnectionPool() {
         return connectionPool;
+    }
+
+    public void releaseConnections() {
+        LOG.trace("Connection pool destroy connections");
+        connectionPool.destroy();
     }
 
     public static void main(String[] args) {

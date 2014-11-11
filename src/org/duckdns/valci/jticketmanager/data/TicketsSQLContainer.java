@@ -78,7 +78,7 @@ public class TicketsSQLContainer implements Serializable {
     private void initContainers() {
         try {
             /* TableQuery and SQLContainer for - tickets */
-            dbHelper = new DatabaseHelper();
+            dbHelper = DatabaseHelper.getInstance();
 
             TableQuery q1 = new TableQuery(TABLE, dbHelper.getConnectionPool());
             q1.setVersionColumn(propertyIds.VERSION.toString());
