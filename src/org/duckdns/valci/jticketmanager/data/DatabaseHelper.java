@@ -62,8 +62,6 @@ public class DatabaseHelper implements Serializable {
     private DatabaseHelper() {
         initConnectionPool();
         initDatabase();
-        // if (fillTestData)
-        // fillTestData();
     }
 
     public static DatabaseHelper getInstance() {

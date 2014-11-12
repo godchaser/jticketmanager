@@ -1,6 +1,8 @@
 package org.duckdns.valci.jticketmanager;
 
 import java.io.Serializable;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.duckdns.valci.jticketmanager.data.TicketsSQLContainer;
 import org.slf4j.Logger;
@@ -14,7 +16,7 @@ import com.vaadin.event.FieldEvents.TextChangeListener;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 
-public class TicketsController implements Serializable {
+public class TicketsController implements Serializable, Observer {
     /**
      * 
      */
@@ -37,6 +39,12 @@ public class TicketsController implements Serializable {
         this.setTableValueChangeListener(new TableValueChangeListener());
     }
 
+    @Override
+    public void update(Observable o, Object itemId) {
+        LOG.trace("Model observable data updated, selecting updated item: " + itemId.toString());
+        view.getTicketList().select(itemId);
+    }
+
     // this is listener for all button features
     private final class ButtonClickListener implements Button.ClickListener {
 
@@ -54,8 +62,9 @@ public class TicketsController implements Serializable {
                 break;
             case ("saveTicketButton"):
                 LOG.trace("Save ticket button clicked");
-                model.saveTicket(view.getEditorFields(), view.getTicketList(), view.getSelectCategory(),
-                        view.getSelectPriority(), view.getSelectStatus());
+                model.saveTicket(view.getEditorFields(), view.getTicketList().getValue(), view.getSelectCategory()
+                        .getValue().toString(), view.getSelectPriority().getValue().toString(), view.getSelectStatus()
+                        .getValue().toString());
                 break;
             case ("removeTicketButton"):
                 LOG.trace("Remove ticket button clicked");
@@ -119,7 +128,6 @@ public class TicketsController implements Serializable {
                         .getItemProperty(TicketsSQLContainer.propertyIds.TICKETPRIORITY.toString()).getValue();
                 LOG.trace("Selecting ticketPriority: " + ticketPriority);
                 view.getSelectPriority().select(ticketPriority);
-                view.getTicketList().setSizeFull();
             } else {
                 LOG.trace("TicketId is null");
             }
@@ -153,11 +161,6 @@ public class TicketsController implements Serializable {
 
     public SQLContainer getTicketsSQLContainer() {
         return model.getTicketsSQLContainer().getContainer();
-    }
-
-    public void updatedRow(Object newRowId) {
-        LOG.trace("Selecting row in table: " + newRowId);
-        view.getTicketList().select(newRowId);
     }
 
 }

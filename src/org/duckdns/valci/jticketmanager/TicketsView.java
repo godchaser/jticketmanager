@@ -97,8 +97,8 @@ public class TicketsView extends VerticalLayout implements View {
         leftTicketListLayout.addComponent(bottomLeftLayout);
         bottomLeftLayout.addComponent(ticketSearchField);
         bottomLeftLayout.addComponent(addNewTicketButton);
-        leftTicketListLayout.setSizeFull();
-        leftTicketListLayout.setExpandRatio(ticketList, 1);
+        // leftTicketListLayout.setSizeFull();
+        // leftTicketListLayout.setExpandRatio(ticketList, 1);
         bottomLeftLayout.setWidth("100%");
         ticketSearchField.setWidth("100%");
         bottomLeftLayout.setExpandRatio(ticketSearchField, 1);
@@ -249,12 +249,6 @@ public class TicketsView extends VerticalLayout implements View {
     @Override
     public void enter(ViewChangeEvent event) {
         LOG.trace("Enter View event fired");
-        // if (!initializedFlag) {
-        // LOG.trace("View not initialized yet, initizalizing");
-        // initView();
-        // } else {
-        // LOG.trace("View already initialized");
-        // }
     }
 
 }
