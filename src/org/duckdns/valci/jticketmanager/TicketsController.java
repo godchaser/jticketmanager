@@ -51,9 +51,10 @@ public class TicketsController implements Serializable, Observer {
         private static final long serialVersionUID = 1L;
 
         public void buttonClick(ClickEvent event) {
+            String buttonID = event.getButton().getId();
+            LOG.trace(buttonID + " button clicked");
             switch (event.getButton().getId()) {
             case ("addNewTicketButton"):
-                LOG.trace("New ticket button clicked");
                 model.addNewTicket();
                 LOG.trace("Setting focus on subject field");
                 view.getEditorFields().getField(TicketsSQLContainer.propertyIds.TICKETSUBJECT.toString()).focus();
@@ -61,13 +62,11 @@ public class TicketsController implements Serializable, Observer {
                 view.getTicketSubjectField().setValue("");
                 break;
             case ("saveTicketButton"):
-                LOG.trace("Save ticket button clicked");
                 model.saveTicket(view.getEditorFields(), view.getTicketList().getValue(), view.getSelectCategory()
                         .getValue().toString(), view.getSelectPriority().getValue().toString(), view.getSelectStatus()
                         .getValue().toString());
                 break;
             case ("removeTicketButton"):
-                LOG.trace("Remove ticket button clicked");
                 model.removeTicket(view.getTicketList().getValue());
                 LOG.trace("Selecting last ItemId in table");
                 view.getTicketList().select(model.getTicketsSQLContainer().getContainer().lastItemId());

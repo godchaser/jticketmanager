@@ -111,8 +111,6 @@ public class TicketsModel extends Observable implements Serializable {
         }
     }
 
-    // TODO: this has to be decoupled
-
     @SuppressWarnings("unchecked")
     public void saveTicket(FieldGroup fieldGroup, Object itemID, String ticketCategory, String ticketPriority,
             String ticketStatus) {
